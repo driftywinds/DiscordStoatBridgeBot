@@ -1,7 +1,7 @@
 services:
   bridge:
 #    build: .
-    image: ghcr.io/driftywinds/stoatcord-bridge
+    image: ghcr.io/driftywinds/stoatcord
     container_name: stoat-bridge
     restart: unless-stopped
 

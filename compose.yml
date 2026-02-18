@@ -1,0 +1,18 @@
+services:
+  bridge:
+#    build: .
+    image: ghcr.io/driftywinds/stoatcord-bridge
+    container_name: stoat-bridge
+    restart: unless-stopped
+
+    # Loads every variable from your .env file into the container.
+    # Copy env.example to .env and fill in your tokens before running.
+    env_file:
+      - .env
+
+    # Optional: give the container a name in logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

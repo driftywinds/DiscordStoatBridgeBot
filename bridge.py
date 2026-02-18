@@ -187,8 +187,22 @@ class DiscordBot(commands.Bot):
         discord_id = message.channel.id
         if discord_id not in DISCORD_TO_STOAT:
             return
-        if not message.content:
+
+        parts = []
+        if message.content:
+            parts.append(message.content[:2000])
+        for embed in message.embeds:
+            if embed.title:
+                parts.append(f"**{embed.title}**")
+            if embed.description:
+                parts.append(embed.description)
+            for field in embed.fields:
+                parts.append(f"**{field.name}:** {field.value}")
+
+        if not parts:
             return
+
+        text = "\n".join(parts)[:2000]
 
         stoat_id = DISCORD_TO_STOAT[discord_id]
         ch       = stoat_channels.get(stoat_id)
@@ -199,6 +213,7 @@ class DiscordBot(commands.Bot):
             )
             return
 
+        author_name = (message.author.display_name or message.author.name)[:32]
         avatar_url = (
             str(message.author.avatar.url)
             if message.author.avatar
@@ -207,9 +222,9 @@ class DiscordBot(commands.Bot):
 
         try:
             await ch.send(
-                content=message.content[:2000],
+                content=text,
                 masquerade=stoat.Masquerade(
-                    name=message.author.display_name[:32],
+                    name=author_name,
                     avatar=avatar_url,
                 ),
             )
